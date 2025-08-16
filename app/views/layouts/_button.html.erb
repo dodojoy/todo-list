@@ -1,0 +1,22 @@
+<%
+  base_classes = "px-4 py-2 rounded-md transition-colors duration-200 font-bold cursor-pointer text-center uppercase"
+  variant_classes = {
+    "solid" => "bg-custom-white text-custom-black hover:bg-gray-100",
+    "outline" => "bg-transparent text-custom-white border border-custom-white hover:bg-custom-white/10 hover:text-custom-white"
+  }
+  variant = local_assigns.fetch(:variant, "solid")
+  additional_classes = local_assigns.fetch(:additional_classes, "")
+  url = local_assigns.fetch(:url, nil)
+
+  final_classes = "#{base_classes} #{variant_classes[variant]} #{additional_classes}"
+%>
+
+<% if url %>
+  <%= link_to url, class: final_classes do %>
+    <%= text %>
+  <% end %>
+<% else %>
+  <button class="<%= final_classes %>">
+    <%= text %>
+  </button>
+<% end %>

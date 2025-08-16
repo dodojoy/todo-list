@@ -1,0 +1,28 @@
+<% content_for :title, "Tasks" %>
+
+<div class="max-w-7xl mx-auto flex flex-col gap-6 w-full px">
+  <%= render "tasks/dialog" %>
+  <div class="flex justify-between items-center w-full">
+    <h1 class="font-bold text-4xl">Tasks</h1>
+    <button command="show-modal" commandfor="new_task_dialog" class="rounded-md bg-custom-white p-2 text-sm font-semibold text-custom-black inset-ring inset-ring-white/5 hover:bg-white/20">
+      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" class="text-custom-black"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
+    </button>
+  </div>
+
+  <div id="tasks" class="min-w-full divide-y divide-gray-200 space-y-5">
+    <% if @tasks.any? %>
+      <% @tasks.each do |task| %>
+        <div class="flex flex-col sm:flex-row justify-between items-center pb-5 sm:pb-0">
+          <%= render task %>
+          <div class="w-full sm:w-auto flex flex-col sm:flex-row space-x-2 space-y-2">
+            <%= link_to "Show", task, class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
+            <%= link_to "Edit", edit_task_path(task), class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
+            <%= button_to "Destroy", task, method: :delete, class: "w-full sm:w-auto rounded-md px-3.5 py-2.5 text-white bg-red-600 hover:bg-red-500 font-medium cursor-pointer", data: { turbo_confirm: "Are you sure?" } %>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <p class="text-center my-10">No tasks found.</p>
+    <% end %>
+  </div>
+</div>

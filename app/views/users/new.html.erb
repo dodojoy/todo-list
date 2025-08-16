@@ -1,0 +1,14 @@
+<% content_for :title, "New user" %>
+
+<div class="max-w-5xl mx-auto flex flex-col gap-6">
+  <h1 class="font-bold text-4xl text-center">Sign Up</h1>
+
+  <%= render "form", user: @user %>
+
+  <div class="mt-4 text-sm text-center text-gray-500 sm:mt-2">
+      <span class="text-custom-white">Already have an account?</span>
+      <%= link_to "Sign in", new_session_path, class: "text-custom-white underline hover:no-underline" %>
+  </div>
+
+  <%# <%= link_to "Back to users", users_path, class: "w-full sm:w-auto text-center mt-2 sm:mt-0 sm:ml-2 rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %> 
+</div>
