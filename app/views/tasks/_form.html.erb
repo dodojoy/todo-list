@@ -1,47 +1,50 @@
 <%= form_with(model: task, class: "contents") do |form| %>
-  <% if task.errors.any? %>
-    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-md mt-3">
-      <h2><%= pluralize(task.errors.count, "error") %> prohibited this task from being saved:</h2>
+    <% if task.errors.any? %>
+      <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-md mt-3">
+        <h2><%= pluralize(task.errors.count, "error") %> prohibited this task from being saved:</h2>
 
-      <ul class="list-disc ml-6">
-        <% task.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
+        <ul class="list-disc ml-6">
+          <% task.errors.each do |error| %>
+            <li><%= error.full_message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+     
+    <div data-controller="task">
+      <div class="flex items-center gap-2">
+        <%= form.check_box :concluded,
+              include_hidden: false,
+              data: { task_target: "checkbox", action: "change->task#toggle" },
+              class: ["block rounded-md border-custom-black order-first h-12 w-12",
+                      {"border-gray-400 focus:outline-custom-black": task.errors[:concluded].none?,
+                      "border-red-400 focus:outline-red-600": task.errors[:concluded].any?}] %>
+
+        <%= form.text_field :title,
+              class: ["block rounded-md border-none px-3 py-2 mt-2 w-full focus:outline-none text-2xl font-semibold",
+                      {"border-gray-400 focus:outline-custom-black": task.errors[:title].none?,
+                      "border-red-400 focus:outline-red-600": task.errors[:title].any?}],
+              placeholder: "Enter task title" %>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <span class="text-sm text-custom-black">Status: </span>
+        <span data-task-target="label" class="text-sm text-custom-black/50"></span>
+      </div>
     </div>
-  <% end %>
 
-  <div class="my-5 flex items-center gap-2">
-    <%= form.check_box :concluded, class: ["block shadow-sm rounded-md border order-first h-15 w-15", {"border-gray-400 focus:outline-custom-black": task.errors[:concluded].none?, "border-red-400 focus:outline-red-600": task.errors[:concluded].any?}] %>
-    <%= form.text_field :title, class: ["block rounded-md border-none px-3 py-2 mt-2 w-full focus:outline-none text-2xl font-semibold", {"border-gray-400 focus:outline-custom-black": task.errors[:title].none?, "border-red-400 focus:outline-red-600": task.errors[:title].any?}], placeholder: "Enter task title" %>
-  </div>
+    <div class="flex items-center gap-2">
+      <%= form.label :due_at, "Due on:", class: "text-sm text-custom-black" %>
+      <%= form.datetime_field :due_at,  class: ["border-none text-sm focus:outline-none focus:text-custom-black text-custom-black/50", {"focus:outline-none": task.errors[:due_at].none?, "focus:outline-none": task.errors[:due_at].any?}] %>
+    </div>
 
-  <div class="my-5">
-    <%= form.label :description %>
-    <%= form.textarea :description, rows: 4, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-custom-black": task.errors[:description].none?, "border-red-400 focus:outline-red-600": task.errors[:description].any?}] %>
-  </div>
+    <div class="flex gap-2 h-30">
+      <%= form.label :description, "Description:", class: "text-sm h-full text-custom-black" %>
+      <%= form.textarea :description, placeholder: "Write a description", class: ["border-none h-full text-sm w-full focus:outline-none text-custom-black", {"focus:outline-none": task.errors[:description].none?, "focus:outline-none": task.errors[:description].any?}] %>
+    </div> 
 
-  <div class="my-5">
-    <%= form.label :due_at %>
-    <%= form.datetime_field :due_at, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-custom-black": task.errors[:due_at].none?, "border-red-400 focus:outline-red-600": task.errors[:due_at].any?}] %>
-  </div>
-
-  <div class="my-5 flex items-center gap-2">
-    <%= form.label :concluded %>
-    <%= form.checkbox :concluded, class: ["block shadow-sm rounded-md border order-first h-5 w-5", {"border-gray-400 focus:outline-custom-black": task.errors[:concluded].none?, "border-red-400 focus:outline-red-600": task.errors[:concluded].any?}] %>
-  </div>
-
-  <div class="my-5">
-    <%= form.label :concluded_at %>
-    <%= form.datetime_field :concluded_at, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-custom-black": task.errors[:concluded_at].none?, "border-red-400 focus:outline-red-600": task.errors[:concluded_at].any?}] %>
-  </div>
-
-  <div class="my-5">
-    <%= form.label :user_id %>
-    <%= form.text_field :user_id, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-custom-black": task.errors[:user_id].none?, "border-red-400 focus:outline-red-600": task.errors[:user_id].any?}] %>
-  </div>
-
-  <div class="inline">
-    <%= form.submit class: "w-full sm:w-auto rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white inline-block font-medium cursor-pointer" %>
-  </div>
+    <div class="felx inline justify-end w-full">
+      <%= form.submit class: "w-full rounded-md px-3.5 py-2.5 bg-custom-black hover:bg-custom-black/80 text-custom-white inline-block font-medium cursor-pointer" %>
+    </div>
 <% end %>

@@ -1,0 +1,7 @@
+<% if @task.concluded? %>
+  <%= turbo_stream.remove dom_id(@task) %>
+  <%= turbo_stream.append "concluded-tasks", partial: "tasks/task", locals: { task: @task } %>
+<% else %>
+  <%= turbo_stream.remove dom_id(@task) %>
+  <%= turbo_stream.append "tasks", partial: "tasks/task", locals: { task: @task } %>
+<% end %>

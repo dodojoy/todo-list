@@ -1,0 +1,7 @@
+<% if tasks.any? %>
+  <% tasks.each do |task| %>
+    <%= render task %>
+  <% end %>
+<% else %>
+  <p class="text-center my-10">No tasks found.</p>
+<% end %>

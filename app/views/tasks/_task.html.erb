@@ -1,26 +1,13 @@
-<div id="<%= dom_id task %>" class="w-full sm:w-auto my-5 space-y-5">
-  <div>
-    <strong class="block font-medium mb-1">Title:</strong>
-    <%= task.title %>
+<%= turbo_frame_tag dom_id(task), class: "w-full" do %>
+  <div class="w-full flex items-center gap-2 border-[0.3px] border-gray-200 rounded-md p-3 shadow-sm cursor-pointer hover:bg-custom-white/5 hover:scale-101 transition-all duration-300">
+
+    <%= form_with model: task, data: { turbo_frame: dom_id(task), controller: "task" }, class: "inline-block" do |form| %>
+      <%= form.check_box :concluded,
+            { checked: task.concluded,
+              class: "w-6 h-6",
+              data: { task_target: "checkbox", action: "change->task#submit" } } %>
+    <% end %> 
+
+    <span class="text-xl"><%= task.title %></span>
   </div>
-  <div>
-    <strong class="block font-medium mb-1">Description:</strong>
-    <%= task.description %>
-  </div>
-  <div>
-    <strong class="block font-medium mb-1">Due at:</strong>
-    <%= task.due_at %>
-  </div>
-  <div>
-    <strong class="block font-medium mb-1">Concluded:</strong>
-    <%= task.concluded? ? "Yes" : "No" %>
-  </div>
-  <div>
-    <strong class="block font-medium mb-1">Concluded at:</strong>
-    <%= task.concluded_at %>
-  </div>
-  <div>
-    <strong class="block font-medium mb-1">User:</strong>
-    <%= task.user_id %>
-  </div>
-</div>
+<% end %>

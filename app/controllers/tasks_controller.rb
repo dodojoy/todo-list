@@ -1,9 +1,11 @@
 class TasksController < ApplicationController
+  before_action :set_user
   before_action :set_task, only: %i[ show edit update destroy ]
-
+  before_action :set_concluded_tasks, only: %i[ index ]
+  before_action :set_todo_tasks, only: %i[ index ]
   # GET /tasks or /tasks.json
   def index
-    @tasks = Task.all
+    @tasks = @user.tasks.all
     @task = Task.new
   end
 
@@ -22,12 +24,13 @@ class TasksController < ApplicationController
 
   # POST /tasks or /tasks.json
   def create
-    @task = Task.new(task_params)
+    @task = @user.tasks.build(task_params)
+    @task.due_at = Time.current # Valor padrão temporário para teste
 
     respond_to do |format|
       if @task.save
-        format.html { redirect_to @task, notice: "Task was successfully created." }
-        format.json { render :show, status: :created, location: @task }
+        format.html { redirect_to tasks_path }
+        format.json { render :show, status: :created, location: @tasks_path }
       else
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @task.errors, status: :unprocessable_entity }
@@ -39,8 +42,9 @@ class TasksController < ApplicationController
   def update
     respond_to do |format|
       if @task.update(task_params)
-        format.html { redirect_to @task, notice: "Task was successfully updated.", status: :see_other }
+        # format.html { redirect_to @task, notice: "Task was successfully updated.", status: :see_other }
         format.json { render :show, status: :ok, location: @task }
+        format.turbo_stream
       else
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @task.errors, status: :unprocessable_entity }
@@ -59,6 +63,18 @@ class TasksController < ApplicationController
   end
 
   private
+    def set_user
+      @user = Current.user
+    end
+
+    def set_todo_tasks
+      @todo_tasks = @user.tasks.where(concluded: false)
+    end
+
+    def set_concluded_tasks
+      @concluded_tasks = @user.tasks.where(concluded: true)
+    end
+
     # Use callbacks to share common setup or constraints between actions.
     def set_task
       @task = Task.find(params.expect(:id))
@@ -66,6 +82,6 @@ class TasksController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def task_params
-      params.expect(task: [ :title, :description, :due_at, :concluded, :concluded_at, :user_id ])
+      params.expect(task: [ :title, :description, :concluded, :concluded_at ])
     end
 end
