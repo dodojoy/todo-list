@@ -1,4 +1,4 @@
-require_relative 'prompts/task_time_estimator_prompt'
+require_relative 'prompts/task_time_estimator'
 
 class OpenaiService
   include Prompts
