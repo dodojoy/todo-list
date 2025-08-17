@@ -25,32 +25,30 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
 
-    respond_to do |format|
-      if @user.save
-        start_new_session_for(@user)
-        format.html { redirect_to after_authentication_url }
-        format.turbo_stream { redirect_to after_authentication_url }
-      else
-        format.html { render :new, status: :unprocessable_entity }
+    if @user.save
+      start_new_session_for(@user)
+      redirect_to tasks_path
+    else
+      respond_to do |format|
+        format.html { redirect_to new_user_path }
         format.turbo_stream { 
-          render turbo_stream: [
-            turbo_stream.replace("user_form", partial: "form", locals: { user: @user })
-          ]
+          render turbo_stream: turbo_stream.update("user_form_errors", 
+            partial: "shared/form_errors", 
+            locals: { object: @user }
+          )
         }
-        format.json { render json: @user.errors, status: :unprocessable_entity }
       end
     end
   rescue ActiveRecord::RecordNotUnique
     @user.errors.add(:email_address, :taken)
-    
     respond_to do |format|
-      format.html { render :new, status: :unprocessable_entity }
+      format.html { redirect_to new_user_path }
       format.turbo_stream { 
-        render turbo_stream: [
-          turbo_stream.replace("user_form", partial: "form", locals: { user: @user })
-        ]
+        render turbo_stream: turbo_stream.update("user_form_errors", 
+          partial: "shared/form_errors", 
+          locals: { object: @user }
+        )
       }
-      format.json { render json: @user.errors, status: :unprocessable_entity }
     end
   end
 
