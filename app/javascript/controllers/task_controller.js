@@ -1,7 +1,13 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["checkbox", "label", "dialog"];
+  static targets = [
+    "checkbox",
+    "label",
+    "dialog",
+    "titleInput",
+    "submitButton",
+  ];
   static values = {
     id: String,
   };
@@ -34,5 +40,10 @@ export default class extends Controller {
 
   submit() {
     this.element.requestSubmit();
+  }
+
+  toggleButton() {
+    this.submitButtonTarget.disabled =
+      this.titleInputTarget.value.trim() === "";
   }
 }

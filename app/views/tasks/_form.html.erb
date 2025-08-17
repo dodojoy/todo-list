@@ -12,26 +12,27 @@
               class: ["block rounded-md border-none px-3 py-2 mt-2 w-full focus:outline-none text-2xl font-semibold",
                       {"border-gray-400 focus:outline-custom-black": task.errors[:title].none?,
                       "border-red-400 focus:outline-red-600": task.errors[:title].any?}],
-              placeholder: "Enter task title" %>
+              placeholder: "Enter task title",
+              data: { task_target: "titleInput", action: "input->task#toggleButton" } %>
       </div>
 
       <div class="flex items-center gap-2">
         <span class="text-sm text-custom-black">Status: </span>
         <span data-task-target="label" class="text-sm text-custom-black/50"></span>
       </div>
-    </div>
 
-    <div class="flex items-center gap-2">
-      <%= form.label :due_at, "Due on:", class: "text-sm text-custom-black" %>
-      <%= form.datetime_field :due_at,  class: ["border-none text-sm focus:outline-none focus:text-custom-black text-custom-black/50", {"focus:outline-none": task.errors[:due_at].none?, "focus:outline-none": task.errors[:due_at].any?}] %>
-    </div>
+      <div class="flex items-center gap-2">
+        <%= form.label :due_at, "Due on:", class: "text-sm text-custom-black" %>
+        <%= form.datetime_field :due_at,  class: ["border-none text-sm focus:outline-none focus:text-custom-black text-custom-black/50", {"focus:outline-none": task.errors[:due_at].none?, "focus:outline-none": task.errors[:due_at].any?}] %>
+      </div>
 
-    <div class="flex gap-2 h-30">
-      <%= form.label :description, "Description:", class: "text-sm h-full text-custom-black" %>
-      <%= form.textarea :description, placeholder: "Write a description", class: ["border-none h-full text-sm w-full focus:outline-none text-custom-black", {"focus:outline-none": task.errors[:description].none?, "focus:outline-none": task.errors[:description].any?}] %>
-    </div> 
+      <div class="flex gap-2 h-30">
+        <%= form.label :description, "Description:", class: "text-sm h-full text-custom-black" %>
+        <%= form.textarea :description, placeholder: "Write a description", class: ["border-none h-full text-sm w-full focus:outline-none text-custom-black", {"focus:outline-none": task.errors[:description].none?, "focus:outline-none": task.errors[:description].any?}] %>
+      </div> 
 
-    <div class="felx inline justify-end w-full">
-      <%= form.submit "Create Task", class: "w-full rounded-md px-3.5 py-2.5 bg-custom-black hover:bg-custom-black/80 text-custom-white inline-block font-medium cursor-pointer" %>
+      <div class="felx inline justify-end w-full">
+        <%= form.submit "Create Task", disabled: task.title.blank?, data: { task_target: "submitButton" }, class: "w-full rounded-md px-3.5 py-2.5 bg-custom-black hover:bg-custom-black/80 text-custom-white inline-block font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" %>
+      </div>
     </div>
 <% end %>
