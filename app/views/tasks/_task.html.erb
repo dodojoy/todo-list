@@ -5,7 +5,7 @@
       <%= form_with model: task, data: { turbo_frame: dom_id(task), controller: "task" }, class: "flex items-center" do |form| %>
         <%= form.check_box :concluded,
               { checked: task.concluded,
-                class: "w-6 h-6",
+                class: "w-6 h-6 cursor-pointer",
                 data: { task_target: "checkbox", action: "change->task#submit" } } %>
       <% end %>
       <span class="text-xl"><%= task.title %></span>
