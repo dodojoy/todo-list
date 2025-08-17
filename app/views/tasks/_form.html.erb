@@ -1,5 +1,5 @@
-<%= form_with(model: task, class: "contents") do |form| %>     
-    <div data-controller="task">
+<%= form_with(model: task, class: "contents", data: { controller: "task", task_modal_target: "form" }) do |form| %>     
+    <div>
       <div class="flex items-center gap-2">
         <%= form.check_box :concluded,
               include_hidden: false,
