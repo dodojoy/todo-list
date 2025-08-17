@@ -45,8 +45,6 @@ gem 'discard' #to soft delete
 
 gem 'devise' #to handle authentication
 
-gem "pg", "~> 1.1"
-
 gem 'rubocop'
 
 gem 'ruby-openai'
