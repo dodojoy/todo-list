@@ -1,7 +1,15 @@
-<% if tasks.any? %>
-  <% tasks.each do |task| %>
-    <%= render task %>
+<div id="<%= list_id %>" class="min-w-full space-y-5">
+  <% if list_id == "concluded-tasks" %>
+    <h2 class="font-bold text-2xl">COMPLETED</h2>
   <% end %>
-<% else %>
-  <p class="text-center my-10">No tasks found.</p>
-<% end %>
+
+  <% if tasks.any? %>
+    <% tasks.each do |task| %>
+      <div class="flex flex-col sm:flex-row justify-between items-center pb-5 sm:pb-0 <%= "opacity-50" if list_id == "concluded-tasks" %>">
+        <%= render task %>
+      </div>
+    <% end %>
+  <% else %>
+    <p class="text-center my-10"><%= empty_message %></p>
+  <% end %>
+</div>

@@ -27,12 +27,30 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       if @user.save
-        session[:user_id] = @user.id
-        redirect_to root_path, notice: "User was successfully created."
+        start_new_session_for(@user)
+        format.html { redirect_to after_authentication_url }
+        format.turbo_stream { redirect_to after_authentication_url }
       else
         format.html { render :new, status: :unprocessable_entity }
+        format.turbo_stream { 
+          render turbo_stream: [
+            turbo_stream.replace("user_form", partial: "form", locals: { user: @user })
+          ]
+        }
         format.json { render json: @user.errors, status: :unprocessable_entity }
       end
+    end
+  rescue ActiveRecord::RecordNotUnique
+    @user.errors.add(:email_address, :taken)
+    
+    respond_to do |format|
+      format.html { render :new, status: :unprocessable_entity }
+      format.turbo_stream { 
+        render turbo_stream: [
+          turbo_stream.replace("user_form", partial: "form", locals: { user: @user })
+        ]
+      }
+      format.json { render json: @user.errors, status: :unprocessable_entity }
     end
   end
 

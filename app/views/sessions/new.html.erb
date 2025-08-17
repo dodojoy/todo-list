@@ -1,29 +1,18 @@
 <div class="max-w-5xl mx-auto flex flex-col gap-6">
   <h1 class="font-bold text-4xl text-center">Sign In</h1>
 
-  <%= render "form", session: @session %>
+  <%= turbo_frame_tag "login_form" do %>
+    <%= render "form", session: @session %>
 
-  <% if flash[:alert] %>
-    <div class="text-red-500 text-center text-sm">
-      <%= flash[:alert] %>
+    <div class="flex flex-col gap-2 mt-4">
+      <div class="mt-4 text-center text-sm text-custom-white sm:mt-0">
+        <%= link_to "Forgot password?", new_password_path, class: "text-custom-white underline hover:no-underline" %>
+      </div>
+      
+      <div class="mt-4 text-sm text-center text-custom-white sm:mt-2">  
+          <span class="text-custom-white">Don't have an account?</span>
+          <%= link_to "Sign up", new_user_path, class: "text-custom-white underline hover:no-underline" %>
+      </div>
     </div>
   <% end %>
-
-  <% if flash[:notice] %>
-    <div class="text-green-500 text-center text-sm">
-      <%= flash[:notice] %>
-    </div>
-  <% end %>
-
-  <div class="flex flex-col gap-2">
-    <div class="mt-4 text-center text-sm text-custom-white sm:mt-0">
-      <%= link_to "Forgot password?", new_password_path, class: "text-custom-white underline hover:no-underline" %>
-    </div>
-    
-    <div class="mt-4 text-sm text-center text-custom-white sm:mt-2">  
-        <span class="text-custom-white">Don't have an account?</span>
-        <%= link_to "Sign up", new_user_path, class: "text-custom-white underline hover:no-underline" %>
-    </div>
-  </div>
-    
 </div>

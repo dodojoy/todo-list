@@ -1,37 +1,22 @@
 <% content_for :title, "Tasks" %>
 
-<div class="mx-auto max-w-7xl px-3 flex flex-col gap-6 w-full">
+<div class="mx-auto max-w-7xl px-3 flex flex-col gap-6 w-full pb-10">
   <%= render "tasks/dialog" %>
+  <%= render "tasks/edit_dialog" %>
+  <%= render "tasks/delete_dialog" %>
   <div class="flex justify-between items-center w-full">
     <h1 class="font-medium text-4xl">TASKS</h1>
-    <button command="show-modal" commandfor="new_task_dialog" class="rounded-md bg-custom-white p-2 text-sm font-semibold text-custom-black flex items-center gap-2 hover:bg-white cursor-pointer">
+    <button command="show-modal" commandfor="new_task_dialog" class="cursor-pointer rounded-md bg-custom-white p-2 text-sm font-semibold text-custom-black flex items-center gap-2 hover:bg-white hover:scale-105 transition-all duration-300 cursor-pointer">
       <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" class="text-custom-black"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
       Add a new task
     </button>
   </div>
 
-  <div id="tasks" class="min-w-full space-y-5">
-    <% if @todo_tasks.any? %>
-      <% @todo_tasks.each do |task| %>
-        <div class="flex flex-col sm:flex-row justify-between items-center pb-5 sm:pb-0">
-          <%= render task %>
-        </div>
-      <% end %>
-    <% else %>
-      <p class="text-center my-10">No tasks found.</p>
-    <% end %>
-  </div>
+  <%= turbo_frame_tag "tasks" do %>
+    <%= render "tasks/list", tasks: @todo_tasks, list_id: "tasks", empty_message: "No tasks found." %>
+  <% end %>
 
-  <div id="concluded-tasks" class="min-w-full space-y-5">
-    <h2 class="font-bold text-2xl">COMPLETED</h2>
-
-    <% if @concluded_tasks.any? %>
-      <% @concluded_tasks.each do |task| %>
-        <div class="flex flex-col sm:flex-row justify-between items-center pb-5 sm:pb-0 opacity-50">
-          <%= render task %>
-        </div>
-      <% end %>
-    <% else %>
-      <p class="text-center my-10">No concluded tasks found.</p>
-    <% end %>
+  <%= turbo_frame_tag "concluded-tasks" do %>
+    <%= render "tasks/list", tasks: @concluded_tasks, list_id: "concluded-tasks", empty_message: "No concluded tasks found." %>
+  <% end %>
 </div>

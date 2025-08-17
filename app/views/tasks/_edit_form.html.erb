@@ -1,8 +1,11 @@
-<%= form_with(model: task, class: "contents") do |form| %>     
+<%= form_with(model: task, class: "contents" ) do |form| %>     
     <div data-controller="task">
+      <div class="flex">
+        <%= form.text_field :created_at, value:"Created at: #{format_date(task.created_at)}", class: "text-end text-sm text-custom-black/50 w-full", disabled: true %>
+      </div>
       <div class="flex items-center gap-2">
         <%= form.check_box :concluded,
-              include_hidden: false,
+
               data: { task_target: "checkbox", action: "change->task#toggle" },
               class: ["block rounded-md border-custom-black order-first h-12 w-12",
                       {"border-gray-400 focus:outline-custom-black": task.errors[:concluded].none?,
@@ -23,15 +26,15 @@
 
     <div class="flex items-center gap-2">
       <%= form.label :due_at, "Due on:", class: "text-sm text-custom-black" %>
-      <%= form.datetime_field :due_at,  class: ["border-none text-sm focus:outline-none focus:text-custom-black text-custom-black/50", {"focus:outline-none": task.errors[:due_at].none?, "focus:outline-none": task.errors[:due_at].any?}] %>
+      <%= form.datetime_field :due_at, value: task.due_at, class: ["border-none text-sm focus:outline-none focus:text-custom-black text-custom-black/50", {"focus:outline-none": task.errors[:due_at].none?, "focus:outline-none": task.errors[:due_at].any?}] %>
     </div>
 
     <div class="flex gap-2 h-30">
       <%= form.label :description, "Description:", class: "text-sm h-full text-custom-black" %>
-      <%= form.textarea :description, placeholder: "Write a description", class: ["border-none h-full text-sm w-full focus:outline-none text-custom-black", {"focus:outline-none": task.errors[:description].none?, "focus:outline-none": task.errors[:description].any?}] %>
+      <%= form.textarea :description, value: task.description, placeholder: "Write a description", class: ["border-none h-full text-sm w-full focus:outline-none text-custom-black", {"focus:outline-none": task.errors[:description].none?, "focus:outline-none": task.errors[:description].any?}] %>
     </div> 
 
     <div class="felx inline justify-end w-full">
-      <%= form.submit "Create Task", class: "w-full rounded-md px-3.5 py-2.5 bg-custom-black hover:bg-custom-black/80 text-custom-white inline-block font-medium cursor-pointer" %>
+      <%= form.submit "Edit Task", class: "w-full rounded-md px-3.5 py-2.5 bg-custom-black hover:bg-custom-black/80 text-custom-white inline-block font-medium cursor-pointer" %>
     </div>
 <% end %>

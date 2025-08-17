@@ -1,17 +1,24 @@
 <el-dialog>
-  <dialog data-task-target="dialog" id="new_task_dialog" aria-labelledby="new_task_dialog-title" class="fixed inset-0 size-auto max-h-none max-w-none overflow-y-auto bg-transparent backdrop:bg-transparent">
+  <dialog data-task-delete-target="dialog" id="delete_task_dialog" aria-labelledby="delete_task_dialog-title" class="fixed inset-0 size-auto max-h-none max-w-none overflow-y-auto bg-transparent backdrop:bg-transparent">
     <el-dialog-backdrop class="fixed inset-0 bg-black/50 transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"></el-dialog-backdrop>
 
     <div tabindex="0" class="flex min-h-full items-center justify-center p-4 text-center focus:outline-none sm:items-center sm:p-0">
       <el-dialog-panel class="relative transform overflow-hidden rounded-lg bg-custom-white text-left shadow-xl outline -outline-offset-1 outline-white/10 transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 sm:w-full sm:max-w-lg data-closed:sm:translate-y-0 data-closed:sm:scale-95">
         <div class="bg-custom-white flex flex-col px-4 pt-5 pb-4 sm:p-6 sm:pb-4 w-full gap-2">
             <div class="flex justify-end w-full">
-                <button type="button" command="close" commandfor="new_task_dialog" class="cursor-pointer w-fullrounded-md px-3 py-2 text-sm font-semibold text-white sm:ml-3 sm:w-auto">
+                <button type="button" command="close" commandfor="delete_task_dialog" class="cursor-pointer w-fullrounded-md px-3 py-2 text-sm font-semibold text-white sm:ml-3 sm:w-auto">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" class="text-custom-black"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
                 </button>
             </div>
-            <div id="dialog-content">
-              <%= render "tasks/form", task: @task %>
+            <div id="delete-dialog-content" class="flex flex-col gap-4 w-full">
+                <p class=" font-medium">Are you sure you want to delete this task?</p>
+                <%= form_with(url: "/", method: :delete, class: "contents", data: { task_delete_target: "form" }) do |form| %>
+                  <div class="flex w-full justify-end">
+                    <div class="flex gap-2">
+                    <button type="button" command="close" commandfor="delete_task_dialog" class="size-sm rounded-md px-3.5 py-2.5 bg-custom-black hover:bg-custom-black/80 text-custom-white inline-block font-medium cursor-pointer">Cancel</button>
+                    <%= form.submit "Delete", class: "size-sm rounded-md px-3.5 py-2.5 bg-red-500 hover:bg-red-600 text-custom-white inline-block font-medium cursor-pointer" %>
+                  </div>
+                <% end %>
             </div>
         </div>
       </el-dialog-panel>

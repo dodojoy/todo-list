@@ -20,12 +20,24 @@ class TasksController < ApplicationController
 
   # GET /tasks/1/edit
   def edit
+    @task = Task.find(params[:id])
+    
+    respond_to do |format|
+      format.html do
+        if request.xhr?
+          render partial: "tasks/edit_form", locals: { task: @task }
+        else
+          render :edit
+        end
+      end
+      format.json { render json: @task }
+    end
   end
 
   # POST /tasks or /tasks.json
   def create
     @task = @user.tasks.build(task_params)
-    @task.due_at = Time.current # Valor padrão temporário para teste
+    @task.due_at = Time.current
 
     respond_to do |format|
       if @task.save
@@ -42,9 +54,26 @@ class TasksController < ApplicationController
   def update
     respond_to do |format|
       if @task.update(task_params)
-        # format.html { redirect_to @task, notice: "Task was successfully updated.", status: :see_other }
         format.json { render :show, status: :ok, location: @task }
-        format.turbo_stream
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.remove(@task), 
+
+            turbo_stream.replace(
+              "tasks",
+              partial: "tasks/list",
+              locals: { tasks: @user.tasks.where(concluded: false), list_id: "tasks", empty_message: "No tasks found." }
+            ),
+
+            turbo_stream.replace(
+              "concluded-tasks",
+              partial: "tasks/list",
+              locals: { tasks: @user.tasks.where(concluded: true), list_id: "concluded-tasks", empty_message: "No concluded tasks found." }
+            ),
+
+            turbo_stream.append_all("#edit_task_dialog", "<script>document.querySelector('#edit_task_dialog').close();</script>")
+          ]
+        end
       else
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @task.errors, status: :unprocessable_entity }
@@ -57,8 +86,16 @@ class TasksController < ApplicationController
     @task.destroy!
 
     respond_to do |format|
-      format.html { redirect_to tasks_path, notice: "Task was successfully destroyed.", status: :see_other }
+      format.html { redirect_to tasks_path }
       format.json { head :no_content }
+      format.turbo_stream do
+        render turbo_stream: [
+          turbo_stream.remove(@task),
+          turbo_stream.replace("tasks", partial: "tasks/list", locals: { tasks: @user.tasks.where(concluded: false), list_id: "tasks", empty_message: "No tasks found." }),
+          turbo_stream.replace("concluded-tasks", partial: "tasks/list", locals: { tasks: @user.tasks.where(concluded: true), list_id: "concluded-tasks", empty_message: "No concluded tasks found." }),
+          turbo_stream.append_all("#delete_task_dialog", "<script>document.querySelector('#delete_task_dialog').close();</script>")
+        ]
+      end
     end
   end
 
@@ -75,13 +112,11 @@ class TasksController < ApplicationController
       @concluded_tasks = @user.tasks.where(concluded: true)
     end
 
-    # Use callbacks to share common setup or constraints between actions.
     def set_task
-      @task = Task.find(params.expect(:id))
+      @task = Task.find(params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
     def task_params
-      params.expect(task: [ :title, :description, :concluded, :concluded_at ])
+      params.require(:task).permit(:title, :description, :concluded, :concluded_at, :due_at)
     end
 end

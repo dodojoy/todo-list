@@ -11,7 +11,16 @@ class SessionsController < ApplicationController
       start_new_session_for user
       redirect_to after_authentication_url
     else
-      redirect_to new_session_path, alert: "Try another email address or password."
+      @login_error = "Email or password is invalid"
+      respond_to do |format|
+        format.html { redirect_to new_session_path }
+        format.turbo_stream { 
+          render turbo_stream: turbo_stream.update("login_form_errors", 
+            partial: "sessions/error_message", 
+            locals: { error: @login_error }
+          )
+        }
+      end
     end
   end
 
