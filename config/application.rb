@@ -28,5 +28,8 @@ module TodoList
     config.active_record.default_timezone = :local
     
     # config.eager_load_paths << Rails.root.join("extras")
+    
+    # Ensure services directory is autoloaded
+    config.autoload_paths << Rails.root.join('app', 'services')
   end
 end
