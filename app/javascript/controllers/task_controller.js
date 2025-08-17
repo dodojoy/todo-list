@@ -16,6 +16,10 @@ export default class extends Controller {
     if (this.hasLabelTarget) {
       this.toggle();
     }
+
+    this.element.addEventListener("form:reset", () => {
+      this.submitButtonTarget.disabled = true;
+    });
   }
 
   toggle() {
