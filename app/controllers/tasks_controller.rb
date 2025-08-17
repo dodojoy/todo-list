@@ -37,7 +37,19 @@ class TasksController < ApplicationController
   # POST /tasks or /tasks.json
   def create
     @task = @user.tasks.build(task_params)
-    @task.due_at = Time.current
+    if @task.due_at.blank?
+      estimated_hours = OpenaiService.estimate_task_time(@task.title, @task.description)
+      
+      if estimated_hours
+        if @task.concluded
+          @task.due_at = nil
+        else
+          @task.due_at = Time.current.advance(hours: estimated_hours)
+        end
+      else
+        @task.due_at = nil
+      end
+    end
 
     respond_to do |format|
       if @task.save
@@ -62,13 +74,13 @@ class TasksController < ApplicationController
             turbo_stream.replace(
               "tasks",
               partial: "tasks/list",
-              locals: { tasks: @user.tasks.where(concluded: false), list_id: "tasks", empty_message: "No tasks found." }
+              locals: { tasks: @user.tasks.where(concluded: false).order(updated_at: :asc), list_id: "tasks", empty_message: "No tasks found." }
             ),
 
             turbo_stream.replace(
               "concluded-tasks",
               partial: "tasks/list",
-              locals: { tasks: @user.tasks.where(concluded: true), list_id: "concluded-tasks", empty_message: "No concluded tasks found." }
+              locals: { tasks: @user.tasks.where(concluded: true).order(updated_at: :asc), list_id: "concluded-tasks", empty_message: "No concluded tasks found." }
             ),
 
             turbo_stream.append_all("#edit_task_dialog", "<script>document.querySelector('#edit_task_dialog').close();</script>")
@@ -91,8 +103,8 @@ class TasksController < ApplicationController
       format.turbo_stream do
         render turbo_stream: [
           turbo_stream.remove(@task),
-          turbo_stream.replace("tasks", partial: "tasks/list", locals: { tasks: @user.tasks.where(concluded: false), list_id: "tasks", empty_message: "No tasks found." }),
-          turbo_stream.replace("concluded-tasks", partial: "tasks/list", locals: { tasks: @user.tasks.where(concluded: true), list_id: "concluded-tasks", empty_message: "No concluded tasks found." }),
+          turbo_stream.replace("tasks", partial: "tasks/list", locals: { tasks: @user.tasks.where(concluded: false).order(updated_at: :asc), list_id: "tasks", empty_message: "No tasks found." }),
+          turbo_stream.replace("concluded-tasks", partial: "tasks/list", locals: { tasks: @user.tasks.where(concluded: true).order(updated_at: :asc), list_id: "concluded-tasks", empty_message: "No concluded tasks found." }),
           turbo_stream.append_all("#delete_task_dialog", "<script>document.querySelector('#delete_task_dialog').close();</script>")
         ]
       end
@@ -105,11 +117,11 @@ class TasksController < ApplicationController
     end
 
     def set_todo_tasks
-      @todo_tasks = @user.tasks.where(concluded: false)
+      @todo_tasks = @user.tasks.where(concluded: false).order(updated_at: :asc)
     end
 
     def set_concluded_tasks
-      @concluded_tasks = @user.tasks.where(concluded: true)
+      @concluded_tasks = @user.tasks.where(concluded: true).order(updated_at: :asc)
     end
 
     def set_task
