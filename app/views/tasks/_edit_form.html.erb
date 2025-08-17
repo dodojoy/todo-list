@@ -3,7 +3,7 @@
       <div class="flex">
         <%= form.text_field :created_at, value:"Created at: #{format_date(task.created_at)}", class: "text-end text-sm text-custom-black/50 w-full", disabled: true %>
       </div>
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 border-b-1 border-gray-400 ">
         <%= form.check_box :concluded,
 
               data: { task_target: "checkbox", action: "change->task#toggle" },
@@ -12,7 +12,7 @@
                       "border-red-400 focus:outline-red-600": task.errors[:concluded].any?}] %>
 
         <%= form.text_area :title,
-              class: ["block p-2 rounded-md rounded-md mt-2 w-full focus:outline-none text-2xl font-semibold resize-none",
+              class: ["block p-2 mt-2 w-full focus:outline-none text-2xl font-semibold resize-none",
                       {"focus:outline-custom-black": task.errors[:title].none?,
                       "border-red-400 focus:outline-red-600": task.errors[:title].any?}],
               placeholder: "Enter task title",
